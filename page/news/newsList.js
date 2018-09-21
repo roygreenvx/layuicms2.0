@@ -18,17 +18,18 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
         id : "newsListTable",
         cols : [[
             {type: "checkbox", fixed:"left", width:50},
-            {field: 'newsId', title: 'ID', width:60, align:"center"},
-            {field: 'newsName', title: '文章标题', width:350},
-            {field: 'newsAuthor', title: '发布者', align:'center'},
+            {field: 'fdid', title: 'ID', width:60, align:"center"},
+            {field: 'fdarticletitle', title: '文章标题', width:350},
+            {field: 'fdareaname', title: '地区', align:'center'},
+            {field: 'fdupdatetime', title: '发布时间', align:'center', minWidth:110, templet:function(d){
+                return d.fdupdatetime.substring(0,10);
+            }},
             {field: 'newsStatus', title: '发布状态',  align:'center',templet:"#newsStatus"},
             {field: 'newsLook', title: '浏览权限', align:'center'},
             {field: 'newsTop', title: '是否置顶', align:'center', templet:function(d){
                 return '<input type="checkbox" name="newsTop" lay-filter="newsTop" lay-skin="switch" lay-text="是|否" '+d.newsTop+'>'
             }},
-            {field: 'newsTime', title: '发布时间', align:'center', minWidth:110, templet:function(d){
-                return d.newsTime.substring(0,10);
-            }},
+            
             {title: '操作', width:170, templet:'#newsListBar',fixed:"right",align:"center"}
         ]]
     });
