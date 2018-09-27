@@ -9,7 +9,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
     //新闻列表
     var tableIns = table.render({
         elem: '#newsList',
-        url : '../../json/newsList.json',
+        url : '../../testdata/LoadNews.json',
         cellMinWidth : 95,
         page : true,
         height : "full-125",
@@ -21,14 +21,55 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
             {field: 'fdid', title: 'ID', width:60, align:"center"},
             {field: 'fdarticletitle', title: '文章标题', width:350},
             {field: 'fdareaname', title: '地区', align:'center'},
-            {field: 'fdupdatetime', title: '发布时间', align:'center', minWidth:110, templet:function(d){
-                return d.fdupdatetime.substring(0,10);
+            {field: 'fdpublishtime', title: '发布时间', align:'center', minWidth:110, templet:function(d){
+                return d.fdpublishtime.substring(0,10);
             }},
-            {field: 'newsStatus', title: '发布状态',  align:'center',templet:"#newsStatus"},
-            {field: 'newsLook', title: '浏览权限', align:'center'},
-            {field: 'newsTop', title: '是否置顶', align:'center', templet:function(d){
-                return '<input type="checkbox" name="newsTop" lay-filter="newsTop" lay-skin="switch" lay-text="是|否" '+d.newsTop+'>'
+            {field: 'fdimportance', title: '正负面',  align:'center',templet:function(d){
+                var flag="未设置";
+                switch(d.fdimportance){
+                    case 1:
+                        flag="未设置";
+                        break;
+                    case 2:
+                        flag="优良";
+                        break;
+                    case 3:
+                        flag="不良";
+                        break;
+                }
+                return flag;
             }},
+            {field: 'fdapproveflag', title: '审核',  align:'center',templet:function(d){
+                var flag="未审核";
+                switch(d.fdapproveflag){
+                    case 0:
+                        flag="未审核";
+                        break;
+                    case 1:
+                        flag="未审核";
+                        break;
+                    case 2:
+                        flag="审核通过";
+                        break;
+                    case 3:
+                        flag="审核未通过";
+                        break;
+                    case 4:
+                        flag="待审核";
+                        break;
+                    case 5:
+                        flag="待编辑";
+                        break;
+                    case 7:
+                        flag="编辑完";
+                        break;
+                }
+                return flag;
+            }},
+            {field: 'fdchannel', title: '浏览权限', align:'center'},
+            // {field: 'newsTop', title: '是否置顶', align:'center', templet:function(d){
+            //     return '<input type="checkbox" name="newsTop" lay-filter="newsTop" lay-skin="switch" lay-text="是|否" '+d.newsTop+'>'
+            // }},
             
             {title: '操作', width:170, templet:'#newsListBar',fixed:"right",align:"center"}
         ]]
