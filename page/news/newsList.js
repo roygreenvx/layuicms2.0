@@ -1,9 +1,10 @@
-layui.use(['form','layer','laydate','table','laytpl'],function(){
+layui.use(['form','layer','laydate','table','laytpl','element'],function(){
     var form = layui.form,
         layer = parent.layer === undefined ? layui.layer : top.layer,
         $ = layui.jquery,
         laydate = layui.laydate,
         laytpl = layui.laytpl,
+        element = layui.element;
         table = layui.table;
 
     //新闻列表
@@ -19,7 +20,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
         cols : [[
             {type: "checkbox", fixed:"left", width:50},
             {field: 'fdid', title: 'ID', width:60, align:"center"},
-            {field: 'fdarticletitle', title: '文章标题', width:350},
+            {field: 'fdarticletitle', title: '名称', width:350},
             {field: 'fdareaname', title: '地区', align:'center'},
             {field: 'fdpublishtime', title: '发布时间', align:'center', minWidth:110, templet:function(d){
                 return d.fdpublishtime.substring(0,10);
@@ -66,7 +67,7 @@ layui.use(['form','layer','laydate','table','laytpl'],function(){
                 }
                 return flag;
             }},
-            {field: 'fdchannel', title: '浏览权限', align:'center'},
+            {field: 'fdchannel', title: '所属栏目', align:'center'},
             // {field: 'newsTop', title: '是否置顶', align:'center', templet:function(d){
             //     return '<input type="checkbox" name="newsTop" lay-filter="newsTop" lay-skin="switch" lay-text="是|否" '+d.newsTop+'>'
             // }},
