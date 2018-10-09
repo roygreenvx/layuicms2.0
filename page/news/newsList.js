@@ -7,22 +7,25 @@ layui.use(['form','layer','laydate','table','laytpl','element'],function(){
         element = layui.element;
         table = layui.table;
 
+    $(document).ready(function(){
+        AreaCity_load();
+    })
+
     //新闻列表
     var tableIns = table.render({
         elem: '#newsList',
         //url : '../../testdata/LoadNews.json',
-        url:'http://localhost:12136/DataServer/TreeData.aspx?method=LoadNews',
-        request: {
-            pageName: 'pageIndex', //页码的参数名称，默认：page
-            limitName: 'pageSize' //每页数据量的参数名，默认：limit
-        },
-        where:{
-            fdnodeid: 'f729396dac5a48e9bf289d4d1a85eab3',
-            //fdaproveflag_slt:1,
-            sortOrder:''
-        },
+        // url:'http://localhost:12136/DataServer/TreeData.aspx?method=LoadNews',
+        // request: {
+        //     pageName: 'pageIndex', //页码的参数名称，默认：page
+        //     limitName: 'pageSize' //每页数据量的参数名，默认：limit
+        // },
+        // where:{
+        //     fdnodeid: 'f729396dac5a48e9bf289d4d1a85eab3',
+        //     //fdaproveflag_slt:1,
+        //     sortOrder:''
+        // },
         parseData: function(res){
-            debugger;
             return{
                 "code": 0, //解析接口状态
                 "msg": '', //解析提示文本
@@ -95,6 +98,92 @@ layui.use(['form','layer','laydate','table','laytpl','element'],function(){
         ]]
     });
 
+    //地区选择
+    //加载省份方法
+    function AreaCity_load() {
+        $.ajax({
+            url: "http://localhost:12136/DataServer/GetCityAajax.aspx?method=GetAreaList",
+            type: "Post",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                //debugger;
+                var ddl = $(".select-sheng");
+                //删除节点
+                $(".select-sheng option").remove();
+                ddl.append("<option value=''>不限(省份)</option>");
+                //重新添加
+                $.each(data, function (i, n) {
+                    var opt = $("<option></option>").text(data[i].fdareaname).val(data[i].fdareacode);
+                    ddl.append(opt);
+                });
+                //重新渲染控件
+                form.render('select');
+            },
+            error: function (data) {
+                //alert("Error");
+            }
+        });
+    }
+    //地级市
+    form.on('select(select-sheng)',function(data){
+        var id = data.value;
+        $.ajax({
+            url: "http://localhost:12136/DataServer/GetCityAajax.aspx?method=GetAreaList&id=" + id,
+            type: "Post",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                //debugger;
+                var ddl = $(".select-shi");
+                //删除节点
+                $(".select-shi option").remove();
+                ddl.append("<option value=''>不限(地级市)</option>");
+                ddl.append("<option value='0'>全部下属地区</option>");
+                ddl.append("<option value='-2'>其他</option>");
+                $(".select-quxian option").remove();
+                $(".select-quxian").html("<option value=''>不限(县级市)</option>");
+                //重新添加
+                $.each(data, function (i, n) {
+                    var opt = $("<option></option>").text(data[i].fdareaname).val(data[i].fdareacode);
+                    ddl.append(opt);
+                });
+                //重新渲染控件
+                form.render('select');
+            },
+            error: function (data) {
+                //alert("Error");
+            }
+        });
+    })
+    //县级市
+    form.on('select(select-shi)',function(data){
+        var id = data.value;
+        if (id == -2) { id = $(".select-sheng").val(); }
+        $.ajax({
+            url: "http://localhost:12136/DataServer/GetCityAajax.aspx?method=GetAreaListXian&id=" + id,
+            type: "Post",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                var ddl = $(".select-quxian");
+                //删除节点
+                $(".select-quxian option").remove();
+                ddl.html("<option value='-1'>不限(县级市)</option>");
+                //重新添加
+                $.each(data, function (i, n) {
+                    var opt = $("<option></option>").text(data[i].fdareaname).val(data[i].fdareacode);
+                    ddl.append(opt);
+                })
+                //重新渲染控件
+                form.render('select');
+            },
+            error: function (data) {
+                //alert("Error");
+            }
+        });
+    })
+
     //是否置顶
     form.on('switch(newsTop)', function(data){
         var index = layer.msg('修改中，请稍候',{icon: 16,time:false,shade:0.8});
@@ -108,20 +197,59 @@ layui.use(['form','layer','laydate','table','laytpl','element'],function(){
         },500);
     })
 
-    //搜索【此功能需要后台配合，所以暂时没有动态效果演示】
+    //搜索
     $(".search_btn").on("click",function(){
-        if($(".searchVal").val() != ''){
-            table.reload("newsListTable",{
-                page: {
-                    curr: 1 //重新从第 1 页开始
-                },
-                where: {
-                    key: $(".searchVal").val()  //搜索的关键字
-                }
-            })
-        }else{
-            layer.msg("请输入搜索的内容");
+        // if($(".searchVal").val() != ''){
+        
+        //地区选项
+        var CityCode = '';
+        var codesheng = $(".select-sheng").val();
+        var codeshi = $(".select-shi").val();
+        var codequxian = $(".select-quxian").val();
+        if (codequxian != null && codequxian != "") {
+            CityCode = codequxian;
         }
+        else {
+            if (codeshi != null && codeshi != "") {
+                if(codeshi=="0")
+                {
+                    CityCode=codesheng+"|0";
+                }
+                else
+                {
+                    CityCode = codeshi;
+                }
+            }
+            else {
+                if (codesheng != null && codesheng != "") {
+                    CityCode = codesheng;
+                }
+            }
+        }
+
+        table.reload("newsListTable",{
+            url:'http://localhost:12136/DataServer/TreeData.aspx?method=LoadNews',
+            request: {
+                pageName: 'pageIndex', //页码的参数名称，默认：page
+                limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            },
+            where:{
+                fdnodeid: 'f729396dac5a48e9bf289d4d1a85eab3',
+                //fdaproveflag_slt:1,
+                sortOrder:'',
+                key:$(".searchVal").val(),
+                CityCode:CityCode
+            },
+            page: {
+                curr: 1 //重新从第 1 页开始
+            },
+            // where: {
+            //     key: $(".searchVal").val()  //搜索的关键字
+            // }
+        })
+        // }else{
+        //     layer.msg("请输入搜索的内容");
+        // }
     });
 
     //添加文章

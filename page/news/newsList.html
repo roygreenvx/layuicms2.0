@@ -37,29 +37,40 @@
 			</div>
 			<div class="layui-inline">
 				<div class="layui-input-inline">
-					<select name="city">
-						<option value=""></option>
-						<option value="0">北京</option>
-						<option value="1">上海</option>
-						<option value="2">广州</option>
-						<option value="3">深圳</option>
-						<option value="4">杭州</option>
+					<select class="select-sheng" lay-filter="select-sheng" >
+						<option value="">不限(省份)</option>
+					</select>
+				</div>
+				<div class="layui-input-inline">
+					<select class="select-shi" lay-filter="select-shi">
+						<option value="">不限(地级市)</option>
+					</select>
+				</div>
+				<div class="layui-input-inline">
+					<select class="select-quxian" lay-filter="select-quxian">
+						<option value="">不限(县级市)</option>
 					</select>
 				</div>
 			</div>
 			<div class="layui-inline">
 				<div class="layui-input-inline">
-					<select name="city">
-						<option value=""></option>
-						<option value="0">北京</option>
+					<select class="select-zhengfumian">
+						<option value="">不限（正负面）</option>
+						<option value="1">未设置</option>
+						<option value="2">优良</option>
+						<option value="3">不良</option>
 					</select>
 				</div>
 			</div>
 			<div class="layui-inline">
 				<div class="layui-input-inline">
-					<select name="city">
-						<option value=""></option>
-						<option value="0">北京</option>
+					<select class="select-fdaproveflag">
+						<option value="">不限（审核状态）</option>
+						<option value="1">未审核</option>
+						<option value="2">审核通过</option>
+						<option value="3">审核未通过</option>
+						<option value="4">待审核</option>
+						<option value="5">待编辑</option>
 					</select>
 				</div>
 			</div>
