@@ -10,10 +10,29 @@ layui.use(['form','layer','laydate','table','laytpl','element'],function(){
     //新闻列表
     var tableIns = table.render({
         elem: '#newsList',
-        url : '../../testdata/LoadNews.json',
+        //url : '../../testdata/LoadNews.json',
+        url:'http://localhost:12136/DataServer/TreeData.aspx?method=LoadNews',
+        request: {
+            pageName: 'pageIndex', //页码的参数名称，默认：page
+            limitName: 'pageSize' //每页数据量的参数名，默认：limit
+        },
+        where:{
+            fdnodeid: 'f729396dac5a48e9bf289d4d1a85eab3',
+            //fdaproveflag_slt:1,
+            sortOrder:''
+        },
+        parseData: function(res){
+            debugger;
+            return{
+                "code": 0, //解析接口状态
+                "msg": '', //解析提示文本
+                "count": res.total, //解析数据长度
+                "data": res.data //解析数据列表
+            };
+        },
         cellMinWidth : 95,
         page : true,
-        height : "full-125",
+        height : "full-170",
         limit : 20,
         limits : [10,15,20,25],
         id : "newsListTable",
