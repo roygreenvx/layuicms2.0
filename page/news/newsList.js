@@ -129,7 +129,15 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
 			});
 			elem.val(NEWJSON.join(","));
 		}
-	});
+    });
+    
+    laydate.render({
+        elem: '#select-tfdpublishtimebegin'
+    });
+
+    laydate.render({
+        elem: '#select-tfdpublishtimeend'
+    });
 
     //地区选择
     //加载省份方法
