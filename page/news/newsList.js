@@ -1,30 +1,30 @@
-layui.use(['form','layer','laydate','table','laytpl','element'],function(){
+layui.config({
+    base: '../../js/' //此处路径请自行处理, 可以使用绝对路径
+}).extend({
+    tableSelect: 'tableSelect'
+});
+layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],function(){
     var form = layui.form,
         layer = parent.layer === undefined ? layui.layer : top.layer,
         $ = layui.jquery,
         laydate = layui.laydate,
         laytpl = layui.laytpl,
-        element = layui.element;
-        table = layui.table;
+        element = layui.element,
+        table = layui.table,
+        tableSelect=layui.tableSelect;
 
     $(document).ready(function(){
-        AreaCity_load();
+        AreaCity_load();//加载地区选项
+        BackUserload();//加载编辑人员选项
     })
 
     //新闻列表
     var tableIns = table.render({
         elem: '#newsList',
-        //url : '../../testdata/LoadNews.json',
-        // url:'http://localhost:12136/DataServer/TreeData.aspx?method=LoadNews',
-        // request: {
-        //     pageName: 'pageIndex', //页码的参数名称，默认：page
-        //     limitName: 'pageSize' //每页数据量的参数名，默认：limit
-        // },
-        // where:{
-        //     fdnodeid: 'f729396dac5a48e9bf289d4d1a85eab3',
-        //     //fdaproveflag_slt:1,
-        //     sortOrder:''
-        // },
+        request: {
+            pageName: 'pageIndex', //页码的参数名称，默认：page
+            limitName: 'pageSize' //每页数据量的参数名，默认：limit
+        },
         parseData: function(res){
             return{
                 "code": 0, //解析接口状态
@@ -41,6 +41,7 @@ layui.use(['form','layer','laydate','table','laytpl','element'],function(){
         id : "newsListTable",
         cols : [[
             {type: "checkbox", fixed:"left", width:50},
+            {title: '操作', width:140, templet:'#newsListBar',fixed:"left",align:"center"},
             {field: 'fdid', title: 'ID', width:60, align:"center"},
             {field: 'fdarticletitle', title: '名称', width:350},
             {field: 'fdareaname', title: '地区', align:'center'},
@@ -94,15 +95,47 @@ layui.use(['form','layer','laydate','table','laytpl','element'],function(){
             //     return '<input type="checkbox" name="newsTop" lay-filter="newsTop" lay-skin="switch" lay-text="是|否" '+d.newsTop+'>'
             // }},
             
-            {title: '操作', width:170, templet:'#newsListBar',fixed:"right",align:"center"}
+            
         ]]
     });
+
+    tableSelect.render({
+		elem: '#select-infosource',
+		searchKey: 'key',
+		searchPlaceholder: '',
+		table: {
+            url:'http://localhost:13389/DataServer/GetChannelAjax.aspx?method=searchInfosource&sortOrder=',
+            request: {
+                pageName: 'pageIndex', //页码的参数名称，默认：page
+                limitName: 'pageSize' //每页数据量的参数名，默认：limit
+            },
+            parseData: function(res){
+                return{
+                    "code": 0, //解析接口状态
+                    "msg": '', //解析提示文本
+                    "count": res.total, //解析数据长度
+                    "data": res.data //解析数据列表
+                };
+            },
+			cols: [[
+                { type: 'checkbox' },
+                { field: 'text', title: '信源名称' },
+			]]
+		},
+		done: function (elem, data) {
+			var NEWJSON = []
+			layui.each(data.data, function (index, item) {
+				NEWJSON.push(item.text)
+			});
+			elem.val(NEWJSON.join(","));
+		}
+	});
 
     //地区选择
     //加载省份方法
     function AreaCity_load() {
         $.ajax({
-            url: "http://localhost:12136/DataServer/GetCityAajax.aspx?method=GetAreaList",
+            url: "http://localhost:13389/DataServer/GetCityAajax.aspx?method=GetAreaList",
             type: "Post",
             contentType: "application/json",
             dataType: "json",
@@ -129,7 +162,7 @@ layui.use(['form','layer','laydate','table','laytpl','element'],function(){
     form.on('select(select-sheng)',function(data){
         var id = data.value;
         $.ajax({
-            url: "http://localhost:12136/DataServer/GetCityAajax.aspx?method=GetAreaList&id=" + id,
+            url: "http://localhost:13389/DataServer/GetCityAajax.aspx?method=GetAreaList&id=" + id,
             type: "Post",
             contentType: "application/json",
             dataType: "json",
@@ -161,7 +194,7 @@ layui.use(['form','layer','laydate','table','laytpl','element'],function(){
         var id = data.value;
         if (id == -2) { id = $(".select-sheng").val(); }
         $.ajax({
-            url: "http://localhost:12136/DataServer/GetCityAajax.aspx?method=GetAreaListXian&id=" + id,
+            url: "http://localhost:13389/DataServer/GetCityAajax.aspx?method=GetAreaListXian&id=" + id,
             type: "Post",
             contentType: "application/json",
             dataType: "json",
@@ -169,7 +202,7 @@ layui.use(['form','layer','laydate','table','laytpl','element'],function(){
                 var ddl = $(".select-quxian");
                 //删除节点
                 $(".select-quxian option").remove();
-                ddl.html("<option value='-1'>不限(县级市)</option>");
+                ddl.html("<option value=''>不限(县级市)</option>");
                 //重新添加
                 $.each(data, function (i, n) {
                     var opt = $("<option></option>").text(data[i].fdareaname).val(data[i].fdareacode);
@@ -183,6 +216,30 @@ layui.use(['form','layer','laydate','table','laytpl','element'],function(){
             }
         });
     })
+
+    //加载编辑人员
+    function BackUserload() {
+        $.ajax({
+            url: "http://localhost:13389/DataServer/TreeData.aspx?method=GetBackUser",
+            type: "Post",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (data) {
+                var editor_ddl = $(".select-editor");
+                var approver_ddl = $(".select-approver");
+                $.each(data, function (i, n) {
+                    var opt = $("<option></option>").text(data[i].Fdusername).val(data[i].Fdusername);
+                    var opt2 = $("<option></option>").text(data[i].Fdusername).val(data[i].Fdusername);
+                    editor_ddl.append(opt);
+                    approver_ddl.append(opt2);
+                })
+                form.render('select');
+            },
+            error: function (data) {
+                alert("Error");
+            }
+        });
+    }
 
     //是否置顶
     form.on('switch(newsTop)', function(data){
@@ -228,17 +285,23 @@ layui.use(['form','layer','laydate','table','laytpl','element'],function(){
         }
 
         table.reload("newsListTable",{
-            url:'http://localhost:12136/DataServer/TreeData.aspx?method=LoadNews',
-            request: {
-                pageName: 'pageIndex', //页码的参数名称，默认：page
-                limitName: 'pageSize' //每页数据量的参数名，默认：limit
-            },
+            url:'http://localhost:13389/DataServer/TreeData.aspx?method=SearchNews',
             where:{
-                fdnodeid: 'f729396dac5a48e9bf289d4d1a85eab3',
-                //fdaproveflag_slt:1,
-                sortOrder:'',
+                //fdnodeid: 'f729396dac5a48e9bf289d4d1a85eab3',
                 key:$(".searchVal").val(),
-                CityCode:CityCode
+                CityCode:CityCode,
+                ZHongYao:$(".select-zhengfumian").val(),
+                fdaproveflag_slt:$(".select-fdaproveflag").val(),
+                selectInChannel:$(".select-inchannel").val(),
+                SelectInSubProject:$(".select-insubproject").val(),
+                SelectType:$(".select-type").val(),
+                infosource:'',
+                editor:'',
+                approver:'',
+                tfdpublishtimebegin:'',
+                tfdpublishtimeend:'',
+                sortOrder:'',
+                isPriorityQueryInfoSources:true,
             },
             page: {
                 curr: 1 //重新从第 1 页开始

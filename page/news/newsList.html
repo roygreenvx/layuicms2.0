@@ -37,6 +37,15 @@
 			</div>
 			<div class="layui-inline">
 				<div class="layui-input-inline">
+					<select class="select-type" style="width:50px;">
+						<option value="1">标题</option>
+						<option value="2">内容</option>
+						<option value="3">关键词</option>
+					</select>
+				</div>
+			</div>
+			<div class="layui-inline">
+				<div class="layui-input-inline">
 					<select class="select-sheng" lay-filter="select-sheng" >
 						<option value="">不限(省份)</option>
 					</select>
@@ -76,41 +85,37 @@
 			</div>
 			<div class="layui-inline">
 				<div class="layui-input-inline">
-					<select name="city">
-						<option value=""></option>
-						<option value="0">北京</option>
+					<select class="select-inchannel">
+						<option value="">不限（是否在栏目中）</option>
+						<option value="1">未指定栏目</option>
+						<option value="2">指定栏目</option>
 					</select>
 				</div>
 			</div>
 			<div class="layui-inline">
 				<div class="layui-input-inline">
-					<select name="city">
-						<option value=""></option>
-						<option value="0">北京</option>
+					<select class="select-insubproject">
+						<option value="">不限（子项目）</option>
+						<option value="11111111-1111-1111-1111-111111111131">北京子项目</option>
 					</select>
 				</div>
 			</div>
 			<div class="layui-inline">
 				<div class="layui-input-inline">
-					<select name="city">
-						<option value=""></option>
-						<option value="0">北京</option>
+					<input id="select-infosource" type="text" class="layui-input" placeholder="请选择信源" />
+				</div>
+			</div>
+			<div class="layui-inline">
+				<div class="layui-input-inline">
+					<select class="select-editor">
+						<option value="">编辑人员</option>
 					</select>
 				</div>
 			</div>
 			<div class="layui-inline">
 				<div class="layui-input-inline">
-					<select name="city">
-						<option value=""></option>
-						<option value="0">北京</option>
-					</select>
-				</div>
-			</div>
-			<div class="layui-inline">
-				<div class="layui-input-inline">
-					<select name="city">
-						<option value=""></option>
-						<option value="0">北京</option>
+					<select class="select-approver">
+						<option value="">审核人员</option>
 					</select>
 				</div>
 			</div>
@@ -192,7 +197,7 @@
 		<script type="text/html" id="newsListBar">
 			<a class="layui-btn layui-btn-xs layui-btn-primary" lay-event="look">预览</a>
 			<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-			<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
+			<!-- <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a> -->
 		</script>
 	</form>
 	<script type="text/javascript" src="../../layui/layui.js"></script>
