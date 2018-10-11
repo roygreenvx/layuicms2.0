@@ -48,7 +48,7 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
             {field: 'fdpublishtime', title: '发布时间', align:'center', minWidth:110, templet:function(d){
                 return d.fdpublishtime.substring(0,10);
             }},
-            {field: 'fdimportance', title: '正负面',  align:'center',templet:function(d){
+            {field: 'fdimportance', title: '正负面',  align:'center' ,event: 'change-fdimportance',templet:function(d){
                 var flag="未设置";
                 switch(d.fdimportance){
                     case 1:
@@ -97,6 +97,35 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
             
             
         ]]
+    });
+
+     //列表操作
+     table.on('tool(newsList)', function(obj){
+        var layEvent = obj.event,
+            data = obj.data;
+
+        if(layEvent === 'edit'){ //编辑
+            addNews(data);
+        } else if(layEvent === 'del'){ //删除
+            layer.confirm('确定删除此文章？',{icon:3, title:'提示信息'},function(index){
+                // $.get("删除文章接口",{
+                //     newsId : data.newsId  //将需要删除的newsId作为参数传入
+                // },function(data){
+                    tableIns.reload();
+                    layer.close(index);
+                // })
+            });
+        } else if(layEvent === 'look'){ //预览
+            layer.alert("此功能需要前台展示，实际开发中传入对应的必要参数进行文章内容页面访问")
+        }else if (layEvent=='change-fdimportance'){
+            layer.open({
+                type:1,
+                title: false,
+                btn: ['确定', '取消'],
+                skin: 'layer-overflow',
+                content: $("#div-zhengfumian")
+            });  
+        }
     });
 
     tableSelect.render({
@@ -303,11 +332,11 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
                 selectInChannel:$(".select-inchannel").val(),
                 SelectInSubProject:$(".select-insubproject").val(),
                 SelectType:$(".select-type").val(),
-                infosource:'',
-                editor:'',
-                approver:'',
-                tfdpublishtimebegin:'',
-                tfdpublishtimeend:'',
+                infosource:$("#select-infosource").val(),
+                editor:$(".select-editor").val(),
+                approver:$(".select-approver").val(),
+                tfdpublishtimebegin:$("#select-tfdpublishtimebegin").val(),
+                tfdpublishtimeend:$("#select-tfdpublishtimeend").val(),
                 sortOrder:'',
                 isPriorityQueryInfoSources:true,
             },
@@ -380,25 +409,6 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
         }
     })
 
-    //列表操作
-    table.on('tool(newsList)', function(obj){
-        var layEvent = obj.event,
-            data = obj.data;
-
-        if(layEvent === 'edit'){ //编辑
-            addNews(data);
-        } else if(layEvent === 'del'){ //删除
-            layer.confirm('确定删除此文章？',{icon:3, title:'提示信息'},function(index){
-                // $.get("删除文章接口",{
-                //     newsId : data.newsId  //将需要删除的newsId作为参数传入
-                // },function(data){
-                    tableIns.reload();
-                    layer.close(index);
-                // })
-            });
-        } else if(layEvent === 'look'){ //预览
-            layer.alert("此功能需要前台展示，实际开发中传入对应的必要参数进行文章内容页面访问")
-        }
-    });
+   
 
 })

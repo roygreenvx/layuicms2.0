@@ -19,6 +19,9 @@
 		.layui-form-item{
 			margin-bottom: 0px;
 		}
+		body .layer-overflow .layui-layer-content{
+			overflow: visible;
+		}
 	</style>
 </head>
 
@@ -202,6 +205,18 @@
 			<!-- <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a> -->
 		</script>
 	</form>
+
+	<div id="div-zhengfumian" class="layui-form" style="display: none;">
+		<div class="layui-form-item">
+			<select>
+				<option value="">不限（正负面）</option>
+				<option value="1">未设置</option>
+				<option value="2">优良</option>
+				<option value="3">不良</option>
+			</select>
+		</div>	
+	</div>
+
 	<script type="text/javascript" src="../../layui/layui.js"></script>
 	<script type="text/javascript" src="newsList.js"></script>
 </body>
