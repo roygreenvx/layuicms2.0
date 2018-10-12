@@ -33,6 +33,11 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
                 "data": res.data //解析数据列表
             };
         },
+        done: function(res, curr, count){
+            layui.each(res.data,function(index,data){
+                data['ischange']=0;
+            })
+        },
         cellMinWidth : 95,
         page : true,
         height : "full-170",
@@ -41,61 +46,52 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
         id : "newsListTable",
         cols : [[
             {type: "checkbox", fixed:"left", width:50},
-            {title: '操作', width:140, templet:'#newsListBar',fixed:"left",align:"center"},
+            {title: '操作', width:120, templet:'#newsListBar',fixed:"left",align:"center"},
             {field: 'fdid', title: 'ID', width:60, align:"center"},
             {field: 'fdarticletitle', title: '名称', width:350},
             {field: 'fdareaname', title: '地区', align:'center'},
-            {field: 'fdpublishtime', title: '发布时间', align:'center', minWidth:110, templet:function(d){
+            {field: 'fdpublishtime', title: '发布时间', align:'center',event: 'change-fdpublishtime', minWidth:110, templet:function(d){
                 return d.fdpublishtime.substring(0,10);
             }},
             {field: 'fdimportance', title: '正负面',  align:'center' ,event: 'change-fdimportance',templet:function(d){
-                var flag="未设置";
-                switch(d.fdimportance){
-                    case 1:
-                        flag="未设置";
-                        break;
-                    case 2:
-                        flag="优良";
-                        break;
-                    case 3:
-                        flag="不良";
-                        break;
+                var flag="";
+                if(d.fdimportance=='1'){
+                    flag="未设置";
+                }else if(d.fdimportance=='2'){
+                    flag="优良";
+                }else if(d.fdimportance=='3'){
+                    flag="不良";
+                }else {
+                    flag="未设置";
                 }
                 return flag;
             }},
-            {field: 'fdapproveflag', title: '审核',  align:'center',templet:function(d){
-                var flag="未审核";
-                switch(d.fdapproveflag){
-                    case 0:
-                        flag="未审核";
-                        break;
-                    case 1:
-                        flag="未审核";
-                        break;
-                    case 2:
-                        flag="审核通过";
-                        break;
-                    case 3:
-                        flag="审核未通过";
-                        break;
-                    case 4:
-                        flag="待审核";
-                        break;
-                    case 5:
-                        flag="待编辑";
-                        break;
-                    case 7:
-                        flag="编辑完";
-                        break;
+            {field: 'fdapproveflag', title: '审核',event: 'change-fdapproveflag',  align:'center',templet:function(d){
+                var flag="";
+                if(d.fdapproveflag=='0'){
+                    flag="未审核";
+                }else if(d.fdapproveflag=='1'){
+                    flag="未审核";
+                }else if(d.fdapproveflag=='2'){
+                    flag="审核通过";
+                }else if(d.fdapproveflag=='3'){
+                    flag="审核未通过";
+                }else if(d.fdapproveflag=='4'){
+                    flag="待审核";
+                }else if(d.fdapproveflag=='5'){
+                    flag="待编辑";
+                }else if(d.fdapproveflag=='7'){
+                    flag="编辑完";
+                }else {
+                    flag="未审核";
                 }
                 return flag;
             }},
             {field: 'fdchannel', title: '所属栏目', align:'center'},
+            {field: 'ischange', title: '是否修改', hide:true},
             // {field: 'newsTop', title: '是否置顶', align:'center', templet:function(d){
             //     return '<input type="checkbox" name="newsTop" lay-filter="newsTop" lay-skin="switch" lay-text="是|否" '+d.newsTop+'>'
             // }},
-            
-            
         ]]
     });
 
@@ -117,13 +113,72 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
             });
         } else if(layEvent === 'look'){ //预览
             layer.alert("此功能需要前台展示，实际开发中传入对应的必要参数进行文章内容页面访问")
-        }else if (layEvent=='change-fdimportance'){
+        }else if (layEvent=='change-fdimportance'){//正负面修改
             layer.open({
                 type:1,
                 title: false,
                 btn: ['确定', '取消'],
+                btnAlign: 'c',
                 skin: 'layer-overflow',
-                content: $("#div-zhengfumian")
+                content: $("#div-zhengfumian"),
+                success:function(){
+                    form.val('form-zhengfumian',{
+                        'select-zhengfumian':data.fdimportance
+                    })
+                },
+                yes:function(index,layerdom){
+                    obj.update({
+                        ischange: 1,
+                        fdimportance:layerdom.find('select').val()
+                    });
+                    layer.close(index);
+                }
+            });  
+        }else if (layEvent=='change-fdapproveflag'){//审核状态修改
+            layer.open({
+                type:1,
+                title: false,
+                btn: ['确定', '取消'],
+                btnAlign: 'c',
+                skin: 'layer-overflow',
+                content: $("#div-fdapproveflag"),
+                success:function(){
+                    form.val('form-fdapproveflag',{
+                        'select-fdapproveflag':data.fdapproveflag
+                    })
+                },
+                yes:function(index,layerdom){
+                    obj.update({
+                        ischange: 1,
+                        fdapproveflag:layerdom.find('select').val()
+                    });
+                    layer.close(index);
+                }
+            });  
+        }else if (layEvent=='change-fdpublishtime'){//发布时间修改
+            layer.open({
+                type:1,
+                title: false,
+                btn: ['确定', '取消'],
+                area:['280px','330px'],
+                btnAlign: 'c',
+                skin: 'layer-overflow',
+                content: $("#div-fdpublishtime"),
+                success:function(layero, index){
+                    laydate.render({
+                        elem: '#div-fdpublishtime input',
+                        //elem: '#div-fdpublishtime div',
+                        show:true,
+                        value: data.fdpublishtime.substring(0,10)
+                    });
+                },
+                yes:function(index,layerdom){
+                    obj.update({
+                        ischange: 1,
+                        fdpublishtime:layerdom.find('input').val()
+                    });
+                    layer.close(index);
+                }
             });  
         }
     });
@@ -328,7 +383,7 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
                 key:$(".searchVal").val(),
                 CityCode:CityCode,
                 ZHongYao:$(".select-zhengfumian").val(),
-                fdaproveflag_slt:$(".select-fdaproveflag").val(),
+                fdaproveflag_slt:$(".select-fdapproveflag").val(),
                 selectInChannel:$(".select-inchannel").val(),
                 SelectInSubProject:$(".select-insubproject").val(),
                 SelectType:$(".select-type").val(),

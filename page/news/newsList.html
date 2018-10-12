@@ -76,7 +76,7 @@
 			</div>
 			<div class="layui-inline">
 				<div class="layui-input-inline">
-					<select class="select-fdaproveflag">
+					<select class="select-fdapproveflag">
 						<option value="">不限（审核状态）</option>
 						<option value="1">未审核</option>
 						<option value="2">审核通过</option>
@@ -206,14 +206,32 @@
 		</script>
 	</form>
 
-	<div id="div-zhengfumian" class="layui-form" style="display: none;">
-		<div class="layui-form-item">
-			<select>
-				<option value="">不限（正负面）</option>
+	<div id="div-zhengfumian" class="layui-form" lay-filter="form-zhengfumian" style="display: none;">
+		<div class="layui-form-item" style="margin:10px 5px 0px 5px;">
+			<select name="select-zhengfumian">
 				<option value="1">未设置</option>
 				<option value="2">优良</option>
 				<option value="3">不良</option>
 			</select>
+		</div>	
+	</div>
+
+	<div id="div-fdapproveflag" class="layui-form" lay-filter="form-fdapproveflag" style="display: none;">
+		<div class="layui-form-item" style="margin:10px 5px 0px 5px;">
+			<select name="select-fdapproveflag">
+				<option value="1">未审核</option>
+				<option value="2">审核通过</option>
+				<option value="3">审核未通过</option>
+				<option value="4">待审核</option>
+				<option value="5">待编辑</option>
+			</select>
+		</div>	
+	</div>
+
+	<div id="div-fdpublishtime" class="layui-form" lay-filter="form-fdpublishtime" style="display: none;">
+		<div class="layui-form-item" style="margin:10px 5px 0px 5px;">
+			<input type="text" class="layui-input" placeholder="开始时间" />
+			<!-- <div></div> -->
 		</div>	
 	</div>
 
