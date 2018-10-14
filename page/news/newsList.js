@@ -14,8 +14,8 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
         tableSelect=layui.tableSelect;
 
     $(document).ready(function(){
-        AreaCity_load();//加载地区选项
-        BackUserload();//加载编辑人员选项
+        //AreaCity_load();//加载地区选项
+        //BackUserload();//加载编辑人员选项
     })
 
     //新闻列表
@@ -49,7 +49,7 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
             {title: '操作', width:120, templet:'#newsListBar',fixed:"left",align:"center"},
             {field: 'fdid', title: 'ID', width:60, align:"center"},
             {field: 'fdarticletitle', title: '名称', width:350},
-            {field: 'fdareaname', title: '地区', align:'center'},
+            {field: 'fdareaname', title: '地区', align:'center',event:'change-fdarea'},
             {field: 'fdpublishtime', title: '发布时间', align:'center',event: 'change-fdpublishtime', minWidth:110, templet:function(d){
                 return d.fdpublishtime.substring(0,10);
             }},
@@ -114,12 +114,16 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
         } else if(layEvent === 'look'){ //预览
             layer.alert("此功能需要前台展示，实际开发中传入对应的必要参数进行文章内容页面访问")
         }else if (layEvent=='change-fdimportance'){//正负面修改
-            layer.open({
+            var offsettop=$(this).offset().top+'px';
+            var offsetleft=$(this).offset().left+'px';
+            layui.layer.open({
                 type:1,
                 title: false,
                 btn: ['确定', '取消'],
                 btnAlign: 'c',
+                closeBtn:0,
                 skin: 'layer-overflow',
+                offset: [offsettop, offsetleft],
                 content: $("#div-zhengfumian"),
                 success:function(){
                     form.val('form-zhengfumian',{
@@ -135,12 +139,16 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
                 }
             });  
         }else if (layEvent=='change-fdapproveflag'){//审核状态修改
-            layer.open({
+            var offsettop=$(this).offset().top+'px';
+            var offsetleft=$(this).offset().left+'px';
+            layui.layer.open({
                 type:1,
                 title: false,
                 btn: ['确定', '取消'],
                 btnAlign: 'c',
+                closeBtn:0,
                 skin: 'layer-overflow',
+                offset: [offsettop, offsetleft],
                 content: $("#div-fdapproveflag"),
                 success:function(){
                     form.val('form-fdapproveflag',{
@@ -156,13 +164,17 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
                 }
             });  
         }else if (layEvent=='change-fdpublishtime'){//发布时间修改
-            layer.open({
+            var offsettop=$(this).offset().top+'px';
+            var offsetleft=$(this).offset().left+'px';
+            layui.layer.open({
                 type:1,
                 title: false,
                 btn: ['确定', '取消'],
-                area:['280px','330px'],
+                //area:['280px','330px'],
                 btnAlign: 'c',
+                closeBtn:0,
                 skin: 'layer-overflow',
+                offset: [offsettop, offsetleft],
                 content: $("#div-fdpublishtime"),
                 success:function(layero, index){
                     laydate.render({
@@ -177,6 +189,64 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
                         ischange: 1,
                         fdpublishtime:layerdom.find('input').val()
                     });
+                    layer.close(index);
+                }
+            });  
+        }else if (layEvent=='change-fdarea'){//发布地区修改
+            var offsettop=$(this).offset().top+'px';
+            var offsetleft=$(this).offset().left+'px';
+            layui.layer.open({
+                type:1,
+                title: false,
+                btn: ['确定', '取消'],
+                //area:['280px','330px'],
+                btnAlign: 'c',
+                closeBtn:0,
+                skin: 'layer-overflow',
+                offset: [offsettop, offsetleft],
+                content: $("#div-tableselect"),
+                success:function(layero, index){
+                    tableSelect.render({
+                        elem: '#div-tableselect input',
+                        searchKey: 'key',
+                        searchPlaceholder: '',
+                        table: {
+                            //url:'http://localhost:13389/DataServer/GetChannelAjax.aspx?method=searchInfosource&sortOrder=',
+                            url:'../../testdata/LoadNews.json',
+                            request: {
+                                pageName: 'pageIndex', //页码的参数名称，默认：page
+                                limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                            },
+                            parseData: function(res){
+                                return{
+                                    "code": 0, //解析接口状态
+                                    "msg": '', //解析提示文本
+                                    "count": res.total, //解析数据长度
+                                    "data": res.data //解析数据列表
+                                };
+                            },
+                            cols: [[
+                                { type: 'radio' },
+                                { field: 'fdarticletitle', title: '地区' },
+                                { field: 'fdid', title: '编码' },
+                            ]]
+                        },
+                        done: function (elem, data) {
+                            if(data.data.length>0){
+                                elem.attr('areaid',data.data[0].fdid);
+                                elem.val(data.data[0].fdarticletitle);
+                            }
+                        }
+                    });
+                },
+                yes:function(index,layerdom){
+                    obj.update({
+                        ischange: 1,
+                        fdarea:layerdom.find('input').attr('areaid'),
+                        fdareaname:layerdom.find('input').val()
+                    });
+                    layerdom.find('input').removeAttr('areaid');
+                    layerdom.find('input').val('');
                     layer.close(index);
                 }
             });  
@@ -333,6 +403,8 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
         });
     }
 
+    //表格编辑中的地区
+
     //是否置顶
     form.on('switch(newsTop)', function(data){
         var index = layer.msg('修改中，请稍候',{icon: 16,time:false,shade:0.8});
@@ -377,7 +449,8 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
         }
 
         table.reload("newsListTable",{
-            url:'http://localhost:13389/DataServer/TreeData.aspx?method=SearchNews',
+            //url:'http://localhost:13389/DataServer/TreeData.aspx?method=SearchNews',
+            url:'../../testdata/LoadNews.json',
             where:{
                 //fdnodeid: 'f729396dac5a48e9bf289d4d1a85eab3',
                 key:$(".searchVal").val(),

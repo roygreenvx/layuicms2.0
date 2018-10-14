@@ -105,7 +105,7 @@
 			</div>
 			<div class="layui-inline">
 				<div class="layui-input-inline">
-					<input id="select-infosource" type="text" class="layui-input" placeholder="信源" />
+					<input id="select-infosource" type="text" class="layui-input" placeholder="信源" readonly="readonly" />
 				</div>
 			</div>
 			<div class="layui-inline">
@@ -230,8 +230,13 @@
 
 	<div id="div-fdpublishtime" class="layui-form" lay-filter="form-fdpublishtime" style="display: none;">
 		<div class="layui-form-item" style="margin:10px 5px 0px 5px;">
-			<input type="text" class="layui-input" placeholder="开始时间" />
-			<!-- <div></div> -->
+			<input type="text" class="layui-input" placeholder="选择时间" />
+		</div>	
+	</div>
+
+	<div id="div-tableselect" class="layui-form" lay-filter="form-tableselect" style="display: none;">
+		<div class="layui-form-item" style="margin:10px 5px 0px 5px;">
+			<input id="select-tableselect" type="text" class="layui-input" placeholder="请选择" readonly="readonly" />
 		</div>	
 	</div>
 
