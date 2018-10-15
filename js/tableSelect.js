@@ -19,7 +19,7 @@ layui.define(['table', 'jquery', 'form'], function (exports) {
         //默认设置
         opt.searchKey = opt.searchKey || 'keyword';
         opt.searchPlaceholder = opt.searchPlaceholder || '关键词搜索';
-        opt.table.page = opt.table.page || true;
+        opt.table.page = opt.table.page==undefined?true: opt.table.page;
         opt.table.height = opt.table.height || 315;
 
         elem.on('click', function(e) {
@@ -36,8 +36,8 @@ layui.define(['table', 'jquery', 'form'], function (exports) {
                 t+='px';
             }
             var l = elem.offset().left ;
-            if((l+430)>$(window).width()){
-                l=(elem.offset().left-430)+'px';
+            if((l+400)>$(window).width()){
+                l=(elem.offset().left-230)+'px';
             }else{
                 l+='px';
             }
@@ -62,7 +62,7 @@ layui.define(['table', 'jquery', 'form'], function (exports) {
             form.on('submit(tableSelect_btn_search)', function(data){
                 tableSelect_table.reload({
                     where: data.field,
-                    page: {
+                    page: opt.table.page==false?false:{
                       curr: 1
                     }
                   });

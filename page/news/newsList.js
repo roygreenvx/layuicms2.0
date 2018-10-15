@@ -16,8 +16,8 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect','yu
         yutons_sug=layui.yutons_sug;
 
     $(document).ready(function(){
-        AreaCity_load();//加载地区选项
-        BackUserload();//加载编辑人员选项
+        //AreaCity_load();//加载地区选项
+        //BackUserload();//加载编辑人员选项
     })
 
     //新闻列表
@@ -206,38 +206,9 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect','yu
                 closeBtn:0,
                 skin: 'layer-overflow',
                 offset: [offsettop, offsetleft],
-                content: $("#div-tableselect"),
+                content: $("#div-fdarea"),
                 success:function(layero, index){
-                    tableSelect.render({
-                        elem: '#div-tableselect input',
-                        searchKey: 'key',
-                        searchPlaceholder: '',
-                        table: {
-                            id : "fdareaListTable",
-                            url:'http://localhost:13389/DataServer/GetCityAajax.aspx?method=GetCitySearchListJson',
-                            //url:'../../testdata/LoadNews.json',
-                            page:false,
-                            parseData: function(res){
-                                return{
-                                    "code": 0, //解析接口状态
-                                    "msg": '', //解析提示文本
-                                    "count": res.total, //解析数据长度
-                                    "data": res.data //解析数据列表
-                                };
-                            },
-                            cols: [[
-                                { type: 'radio' },
-                                { field: 'rfdname', title: '地区' },
-                                { field: 'rfdid', title: '编码' },
-                            ]]
-                        },
-                        done: function (elem, data) {
-                            if(data.data.length>0){
-                                elem.attr('areaid',data.data[0].rfdid);
-                                elem.val(data.data[0].rfdname);
-                            }
-                        }
-                    });
+                    //table.reload("fdareaListTable");
                 },
                 yes:function(index,layerdom){
                     obj.update({
@@ -250,7 +221,7 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect','yu
                     layer.close(index);
                 }
             });  
-        }else if (layEvent=='change-fdchannel'){//发布地区修改
+        }else if (layEvent=='change-fdchannel'){//栏目修改
             var offsettop=$(this).offset().top+'px';
             var offsetleft=$(this).offset().left+'px';
             layui.layer.open({
@@ -262,38 +233,9 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect','yu
                 closeBtn:0,
                 skin: 'layer-overflow',
                 offset: [offsettop, offsetleft],
-                content: $("#div-tableselect"),
+                content: $("#div-fdchannel"),
                 success:function(layero, index){
-                    tableSelect.render({
-                        elem: '#div-tableselect input',
-                        searchKey: 'key',
-                        searchPlaceholder: '',
-                        table: {
-                            id : "fdchannelListTable",
-                            url:'http://localhost:13389/DataServer/GetChannelAjax.aspx?method=LoadChannelAllTagJson',
-                            //url:'../../testdata/LoadNews.json',
-                            page:false,
-                            parseData: function(res){
-                                return{
-                                    "code": 0, //解析接口状态
-                                    "msg": '', //解析提示文本
-                                    "count": res.total, //解析数据长度
-                                    "data": res.data //解析数据列表
-                                };
-                            },
-                            cols: [[
-                                { type: 'radio' },
-                                { field: 'fdname', title: '栏目' },
-                                { field: 'fdid', title: 'ID' },
-                            ]]
-                        },
-                        done: function (elem, data) {
-                            if(data.data.length>0){
-                                elem.attr('channelid',data.data[0].fdid);
-                                elem.val(data.data[0].fdname);
-                            }
-                        }
-                    });
+                    
                 },
                 yes:function(index,layerdom){
                     obj.update({
@@ -339,6 +281,72 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect','yu
 			});
 			elem.val(NEWJSON.join(","));
 		}
+    });
+
+    tableSelect.render({
+        elem: '#div-fdarea input',
+        searchKey: 'key',
+        searchPlaceholder: '',
+        table: {
+            id : "fdareaListTable",
+            url:'http://localhost:13389/DataServer/GetCityAajax.aspx?method=GetCitySearchListJson',
+            //url:'../../testdata/LoadNews.json',
+            page:false,
+            width:380,
+            height:260,
+            parseData: function(res){
+                return{
+                    "code": 0, //解析接口状态
+                    "msg": '', //解析提示文本
+                    "count": res.total, //解析数据长度
+                    "data": res.data //解析数据列表
+                };
+            },
+            cols: [[
+                { type: 'radio' },
+                { field: 'rfdname', title: '地区' },
+                { field: 'rfdid', title: '编码' },
+            ]]
+        },
+        done: function (elem, data) {
+            if(data.data.length>0){
+                elem.attr('areaid',data.data[0].rfdid);
+                elem.val(data.data[0].rfdname);
+            }
+        }
+    });
+
+    tableSelect.render({
+        elem: '#div-fdchannel input',
+        searchKey: 'key',
+        searchPlaceholder: '',
+        table: {
+            id : "fdchannelListTable",
+            url:'http://localhost:13389/DataServer/GetChannelAjax.aspx?method=LoadChannelAllTagJson',
+            //url:'../../testdata/LoadNews.json',
+            page:false,
+            width:380,
+            height:260,
+            parseData: function(res){
+                return{
+                    "code": 0, //解析接口状态
+                    "msg": '', //解析提示文本
+                    "count": res.total, //解析数据长度
+                    "data": res.data //解析数据列表
+                };
+            },
+            cols: [[
+                { type: 'radio' },
+                { field: 'fdname', title: '栏目' },
+                { field: 'fdid', title: 'ID' },
+            ]]
+        },
+        done: function (elem, data) {
+            if(data.data.length>0){
+                elem.attr('channelid',data.data[0].fdid);
+                elem.val(data.data[0].fdname);
+            }
+        }
     });
     
     laydate.render({
@@ -505,8 +513,8 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect','yu
         }
 
         table.reload("newsListTable",{
-            url:'http://localhost:13389/DataServer/TreeData.aspx?method=SearchNews',
-            //url:'../../testdata/LoadNews.json',
+            //url:'http://localhost:13389/DataServer/TreeData.aspx?method=SearchNews',
+            url:'../../testdata/LoadNews.json',
             where:{
                 //fdnodeid: 'f729396dac5a48e9bf289d4d1a85eab3',
                 key:$(".searchVal").val(),
