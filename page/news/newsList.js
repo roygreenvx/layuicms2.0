@@ -1,9 +1,10 @@
 layui.config({
     base: '../../js/' //此处路径请自行处理, 可以使用绝对路径
 }).extend({
-    tableSelect: 'tableSelect'
+    tableSelect: 'tableSelect',
+    yutons_sug: 'yutons_sug'
 });
-layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],function(){
+layui.use(['form','layer','laydate','table','laytpl','element','tableSelect','yutons_sug'],function(){
     var form = layui.form,
         layer = parent.layer === undefined ? layui.layer : top.layer,
         $ = layui.jquery,
@@ -11,11 +12,12 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
         laytpl = layui.laytpl,
         element = layui.element,
         table = layui.table,
-        tableSelect=layui.tableSelect;
+        tableSelect=layui.tableSelect,
+        yutons_sug=layui.yutons_sug;
 
     $(document).ready(function(){
-        //AreaCity_load();//加载地区选项
-        //BackUserload();//加载编辑人员选项
+        AreaCity_load();//加载地区选项
+        BackUserload();//加载编辑人员选项
     })
 
     //新闻列表
@@ -87,7 +89,7 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
                 }
                 return flag;
             }},
-            {field: 'fdchannel', title: '所属栏目', align:'center'},
+            {field: 'fdchannel', title: '所属栏目', align:'center',event:'change-fdchannel'},
             {field: 'ischange', title: '是否修改', hide:true},
             // {field: 'newsTop', title: '是否置顶', align:'center', templet:function(d){
             //     return '<input type="checkbox" name="newsTop" lay-filter="newsTop" lay-skin="switch" lay-text="是|否" '+d.newsTop+'>'
@@ -211,12 +213,10 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
                         searchKey: 'key',
                         searchPlaceholder: '',
                         table: {
-                            //url:'http://localhost:13389/DataServer/GetChannelAjax.aspx?method=searchInfosource&sortOrder=',
-                            url:'../../testdata/LoadNews.json',
-                            request: {
-                                pageName: 'pageIndex', //页码的参数名称，默认：page
-                                limitName: 'pageSize' //每页数据量的参数名，默认：limit
-                            },
+                            id : "fdareaListTable",
+                            url:'http://localhost:13389/DataServer/GetCityAajax.aspx?method=GetCitySearchListJson',
+                            //url:'../../testdata/LoadNews.json',
+                            page:false,
                             parseData: function(res){
                                 return{
                                     "code": 0, //解析接口状态
@@ -227,14 +227,14 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
                             },
                             cols: [[
                                 { type: 'radio' },
-                                { field: 'fdarticletitle', title: '地区' },
-                                { field: 'fdid', title: '编码' },
+                                { field: 'rfdname', title: '地区' },
+                                { field: 'rfdid', title: '编码' },
                             ]]
                         },
                         done: function (elem, data) {
                             if(data.data.length>0){
-                                elem.attr('areaid',data.data[0].fdid);
-                                elem.val(data.data[0].fdarticletitle);
+                                elem.attr('areaid',data.data[0].rfdid);
+                                elem.val(data.data[0].rfdname);
                             }
                         }
                     });
@@ -246,6 +246,62 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
                         fdareaname:layerdom.find('input').val()
                     });
                     layerdom.find('input').removeAttr('areaid');
+                    layerdom.find('input').val('');
+                    layer.close(index);
+                }
+            });  
+        }else if (layEvent=='change-fdchannel'){//发布地区修改
+            var offsettop=$(this).offset().top+'px';
+            var offsetleft=$(this).offset().left+'px';
+            layui.layer.open({
+                type:1,
+                title: false,
+                btn: ['确定', '取消'],
+                //area:['280px','330px'],
+                btnAlign: 'c',
+                closeBtn:0,
+                skin: 'layer-overflow',
+                offset: [offsettop, offsetleft],
+                content: $("#div-tableselect"),
+                success:function(layero, index){
+                    tableSelect.render({
+                        elem: '#div-tableselect input',
+                        searchKey: 'key',
+                        searchPlaceholder: '',
+                        table: {
+                            id : "fdchannelListTable",
+                            url:'http://localhost:13389/DataServer/GetChannelAjax.aspx?method=LoadChannelAllTagJson',
+                            //url:'../../testdata/LoadNews.json',
+                            page:false,
+                            parseData: function(res){
+                                return{
+                                    "code": 0, //解析接口状态
+                                    "msg": '', //解析提示文本
+                                    "count": res.total, //解析数据长度
+                                    "data": res.data //解析数据列表
+                                };
+                            },
+                            cols: [[
+                                { type: 'radio' },
+                                { field: 'fdname', title: '栏目' },
+                                { field: 'fdid', title: 'ID' },
+                            ]]
+                        },
+                        done: function (elem, data) {
+                            if(data.data.length>0){
+                                elem.attr('channelid',data.data[0].fdid);
+                                elem.val(data.data[0].fdname);
+                            }
+                        }
+                    });
+                },
+                yes:function(index,layerdom){
+                    obj.update({
+                        ischange: 1,
+                        fdchannelid:layerdom.find('input').attr('channelid'),
+                        fdchannel:layerdom.find('input').val()
+                    });
+                    layerdom.find('input').removeAttr('channelid');
                     layerdom.find('input').val('');
                     layer.close(index);
                 }
@@ -449,8 +505,8 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
         }
 
         table.reload("newsListTable",{
-            //url:'http://localhost:13389/DataServer/TreeData.aspx?method=SearchNews',
-            url:'../../testdata/LoadNews.json',
+            url:'http://localhost:13389/DataServer/TreeData.aspx?method=SearchNews',
+            //url:'../../testdata/LoadNews.json',
             where:{
                 //fdnodeid: 'f729396dac5a48e9bf289d4d1a85eab3',
                 key:$(".searchVal").val(),
@@ -471,13 +527,48 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect'],fu
             page: {
                 curr: 1 //重新从第 1 页开始
             },
-            // where: {
-            //     key: $(".searchVal").val()  //搜索的关键字
-            // }
         })
         // }else{
         //     layer.msg("请输入搜索的内容");
         // }
+    });
+
+    //保存列表中的修改
+    $("#btn_saveNews").on('click',function(){
+        debugger;
+        var data = layui.table.cache.newsListTable.filter(function(item){
+            return item.ischange=='1'
+        });
+        //alert(data);
+        //var json = mini.encode(data);
+
+        //alert(json);
+        if (data.length > 0) {
+            //grid.loading("保存中，请稍后......");
+            //alert(data.length);
+            $.ajax({
+                url: "http://localhost:13389/DataServer/TreeData.aspx?method=SaveNews",
+                data: { data: data },
+                type: "post",
+                dataType : 'json',
+                success: function (result) {
+                    //alert(text);
+                    //var o = mini.decode(text);
+                    if (result.iserror) {
+                        alert(result.responseText);
+                    } else {
+                        alert("保存成功.");
+                    }
+
+                    //grid.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR.responseText);
+                }
+            });
+        }else{
+            alert("没有已修改的数据");
+        }
     });
 
     //添加文章

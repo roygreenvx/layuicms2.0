@@ -35,7 +35,12 @@ layui.define(['table', 'jquery', 'form'], function (exports) {
             }else{
                 t+='px';
             }
-            var l = elem.offset().left +"px";
+            var l = elem.offset().left ;
+            if((l+430)>$(window).width()){
+                l=(elem.offset().left-430)+'px';
+            }else{
+                l+='px';
+            }
             var tableName = "tableSelect_table_" + new Date().getTime();
             var tableBox = '<div class="tableSelect layui-anim layui-anim-upbit" style="left:'+l+';top:'+t+';border: 1px solid #d2d2d2;background-color: #fff;box-shadow: 0 2px 4px rgba(0,0,0,.12);padding:10px 10px 0 10px;position: absolute;z-index: 66666666;margin: 5px 0;border-radius: 2px;">';
                 tableBox += '<div class="tableSelectBar">';
