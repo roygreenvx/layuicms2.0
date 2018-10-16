@@ -16,8 +16,8 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect','yu
         yutons_sug=layui.yutons_sug;
 
     $(document).ready(function(){
-        //AreaCity_load();//加载地区选项
-        //BackUserload();//加载编辑人员选项
+        AreaCity_load();//加载地区选项
+        BackUserload();//加载编辑人员选项
     })
 
     //新闻列表
@@ -513,8 +513,8 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect','yu
         }
 
         table.reload("newsListTable",{
-            //url:'http://localhost:13389/DataServer/TreeData.aspx?method=SearchNews',
-            url:'../../testdata/LoadNews.json',
+            url:'http://localhost:13389/DataServer/TreeData.aspx?method=SearchNews',
+            //url:'../../testdata/LoadNews.json',
             where:{
                 //fdnodeid: 'f729396dac5a48e9bf289d4d1a85eab3',
                 key:$(".searchVal").val(),

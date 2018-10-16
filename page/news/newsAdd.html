@@ -10,23 +10,36 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="format-detection" content="telephone=no">
 	<link rel="stylesheet" href="../../layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="../../css/formSelects-v4.css" media="all" />
 	<link rel="stylesheet" href="../../css/public.css" media="all" />
 </head>
 <body class="childrenBody">
 <form class="layui-form layui-row layui-col-space10">
-	<div class="layui-col-md8 layui-col-xs12">
+	<div class="layui-col-md9 layui-col-xs12">
 		<!-- <div class="layui-row layui-col-space10"> -->
 			<!-- <div class="layui-col-md9 layui-col-xs7"> -->
 				<div class="layui-form-item magt3">
-					<label class="layui-form-label">文章标题</label>
+					<label class="layui-form-label">标题</label>
 					<div class="layui-input-block">
 						<input type="text" class="layui-input newsName" lay-verify="newsName" placeholder="请输入文章标题">
 					</div>
 				</div>
 				<div class="layui-form-item">
-					<label class="layui-form-label">内容摘要</label>
+					<label class="layui-form-label">网页地址</label>
 					<div class="layui-input-block">
-						<textarea placeholder="请输入内容摘要" class="layui-textarea abstract"></textarea>
+						<input type="text" class="layui-input" placeholder="请输入网页地址">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">来源</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" placeholder="请输入来源">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">关键字</label>
+					<div class="layui-input-block">
+						<input type="text" class="layui-input" placeholder="请输入关键字">
 					</div>
 				</div>
 			<!-- </div> -->
@@ -36,15 +49,27 @@
 				</div>
 			</div> -->
 		<!-- </div> -->
-		<div class="layui-form-item magb0">
+		<div class="layui-form-item">
 			<label class="layui-form-label">文章内容</label>
 			<div class="layui-input-block">
-				<textarea class="layui-textarea layui-hide" name="content" lay-verify="content" id="news_content"></textarea>
+				<!-- <textarea class="layui-textarea layui-hide" name="content" lay-verify="content" id="news_content"></textarea> -->
+				<textarea class="layui-textarea" name="content" id="content" style="min-height:300px;min-width:600px;"></textarea>
 			</div>
 		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">附件列表</label>
+			<div class="layui-input-block">
+				<div class="layui-inline">
+					<button type="button" class="layui-btn layui-btn-xs" id="chooseAtt">选择文件</button>
+					<button type="button" class="layui-btn layui-btn-xs" id="uploadAtt">开始上传</button>
+				</div>
+				<table id="attTable" lay-filter="attTable"></table>
+			</div>
+		</div>
+		
 	</div>
-	<div class="layui-col-md4 layui-col-xs12">
-		<blockquote class="layui-elem-quote title"><i class="seraph icon-caidan"></i> 栏目和地区</blockquote>
+	<div class="layui-col-md3 layui-col-xs12">
+		<blockquote class="layui-elem-quote title"><i class="seraph icon-caidan"></i> 地区和栏目</blockquote>
 		<div class="border category">
 			<!-- <div class="">
 				<p><input type="checkbox" name="news" title="新闻" lay-skin="primary" /></p>
@@ -53,54 +78,54 @@
 				<p><input type="checkbox" name="images" title="图片" lay-skin="primary" /></p>
 			</div> -->
 			<div class="layui-form-item">
-				<select>
-					<option>请选择栏目</option>
+				<!-- <label class="layui-form-label">栏目</label> -->
+				<!-- <div class="layui-input-block"> -->
+				<select name="city" xm-select="select-city" xm-select-search="" xm-select-search-type="dl">
 				</select>
+				<!-- </div> -->
 			</div>
 			<div class="layui-form-item">
-				<select>
-					<option>请选择城市</option>
+				<!-- <label class="layui-form-label">城市</label> -->
+				<!-- <div class="layui-input-block"> -->
+				<select name="channel" xm-select="select-channel" xm-select-search="" xm-select-search-type="dl">
 				</select>
+				<!-- </div> -->
 			</div>
 			
 		</div>
-		<blockquote class="layui-elem-quote title magt10"><i class="layui-icon">&#xe609;</i> 发布</blockquote>
+		<blockquote class="layui-elem-quote title magt10"><i class="layui-icon">&#xe609;</i> 发布选项</blockquote>
 		<div class="border">
 			<div class="layui-form-item">
-				<label class="layui-form-label"><i class="layui-icon">&#xe60e;</i> 状　态</label>
+				<label class="layui-form-label">时间</label>
 				<div class="layui-input-block newsStatus">
-					<select name="status" lay-verify="required">
-						<option value="0">保存草稿</option>
-						<option value="1">等待审核</option>
+					<input type="text" class="layui-input" id="fdpublishdate" name="fdpublishdate" placeholder="请选择时间" readonly />
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">正负面</label>
+				<div class="layui-input-block">
+					<select class="select-zhengfumian">
+						<option value="">不限</option>
+						<option value="1">未设置</option>
+						<option value="2">优良</option>
+						<option value="3">不良</option>
 					</select>
 				</div>
 			</div>
-			<div class="layui-form-item">
-				<label class="layui-form-label"><i class="layui-icon">&#xe609;</i> 发　布</label>
-				<div class="layui-input-block">
-					<input type="radio" name="release" title="立即发布" lay-skin="primary" lay-filter="release" checked />
-					<input type="radio" name="release" title="定时发布" lay-skin="primary" lay-filter="release" />
-				</div>
-			</div>
-			<div class="layui-form-item layui-hide releaseDate">
-				<label class="layui-form-label"></label>
-				<div class="layui-input-block">
-					<input type="text" class="layui-input" id="release" placeholder="请选择日期和时间" readonly />
-				</div>
-			</div>
 			<div class="layui-form-item openness">
-				<label class="layui-form-label"><i class="seraph icon-look"></i> 公开度</label>
+				<label class="layui-form-label">审核</label>
 				<div class="layui-input-block">
-					<input type="radio" name="openness" title="开放浏览" lay-skin="primary" checked />
-					<input type="radio" name="openness" title="私密浏览" lay-skin="primary" />
+					<select class="select-fdapproveflag">
+						<option value="">不限</option>
+						<option value="1">未审核</option>
+						<option value="2">审核通过</option>
+						<option value="3">审核未通过</option>
+						<option value="4">待审核</option>
+						<option value="5">待编辑</option>
+					</select>
 				</div>
 			</div>
-			<div class="layui-form-item newsTop">
-				<label class="layui-form-label"><i class="seraph icon-zhiding"></i> 置　顶</label>
-				<div class="layui-input-block">
-					<input type="checkbox" name="newsTop" lay-skin="switch" lay-text="是|否">
-				</div>
-			</div>
+			
 			<hr class="layui-bg-gray" />
 			<div class="layui-right">
 				<a class="layui-btn layui-btn-sm" lay-filter="addNews" lay-submit><i class="layui-icon">&#xe609;</i>发布</a>
@@ -109,6 +134,9 @@
 		</div>
 	</div>
 </form>
+<script charset="utf-8" src="../../kindeditor/kindeditor.js"></script>
+<script charset="utf-8" src="../../kindeditor/lang/zh_CN.js"></script>
+<script charset="utf-8" src="../../kindeditor/plugins/code/prettify.js"></script>
 <script type="text/javascript" src="../../layui/layui.js"></script>
 <script type="text/javascript" src="newsAdd.js"></script>
 </body>

@@ -30,14 +30,14 @@ layui.define(['table', 'jquery', 'form'], function (exports) {
             }
 
             var t = elem.offset().top + elem.outerHeight();
-            if((t+360)>$(window).height()){
-                t=(elem.offset().top-370)+'px';
+            if((t+310)>$(window).height()){
+                t=($(window).height()-310)+'px';
             }else{
                 t+='px';
             }
             var l = elem.offset().left ;
             if((l+400)>$(window).width()){
-                l=(elem.offset().left-230)+'px';
+                l=($(window).width()-400)+'px';
             }else{
                 l+='px';
             }
