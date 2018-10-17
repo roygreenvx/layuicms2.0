@@ -14,32 +14,33 @@
 	<link rel="stylesheet" href="../../css/public.css" media="all" />
 </head>
 <body class="childrenBody">
-<form class="layui-form layui-row layui-col-space10">
+<form class="layui-form layui-row layui-col-space10" lay-filter="form-news">
 	<div class="layui-col-md9 layui-col-xs12">
 		<!-- <div class="layui-row layui-col-space10"> -->
 			<!-- <div class="layui-col-md9 layui-col-xs7"> -->
+				<input id="fdid" name="fdid" hidden>
 				<div class="layui-form-item magt3">
 					<label class="layui-form-label">标题</label>
 					<div class="layui-input-block">
-						<input type="text" class="layui-input newsName" lay-verify="newsName" placeholder="请输入文章标题">
+						<input type="text" name="fdarticletitle" class="layui-input" lay-verify="required" placeholder="请输入文章标题">
 					</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">网页地址</label>
 					<div class="layui-input-block">
-						<input type="text" class="layui-input" placeholder="请输入网页地址">
+						<input type="text" name="fdarticleurl" class="layui-input" placeholder="请输入网页地址">
 					</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">来源</label>
 					<div class="layui-input-block">
-						<input type="text" class="layui-input" placeholder="请输入来源">
+						<input type="text" name="fdsource" class="layui-input" placeholder="请输入来源">
 					</div>
 				</div>
 				<div class="layui-form-item">
 					<label class="layui-form-label">关键字</label>
 					<div class="layui-input-block">
-						<input type="text" class="layui-input" placeholder="请输入关键字">
+						<input type="text" name="fdkeyword" class="layui-input" placeholder="请输入关键字">
 					</div>
 				</div>
 			<!-- </div> -->
@@ -53,15 +54,17 @@
 			<label class="layui-form-label">文章内容</label>
 			<div class="layui-input-block">
 				<!-- <textarea class="layui-textarea layui-hide" name="content" lay-verify="content" id="news_content"></textarea> -->
-				<textarea class="layui-textarea" name="content" id="content" style="min-height:300px;min-width:600px;"></textarea>
+				<textarea class="layui-textarea" name="fdhtmlcontent" id="content" style="min-height:300px;min-width:600px;"></textarea>
 			</div>
 		</div>
 		<div class="layui-form-item">
 			<label class="layui-form-label">附件列表</label>
 			<div class="layui-input-block">
 				<div class="layui-inline">
-					<button type="button" class="layui-btn layui-btn-xs" id="chooseAtt">选择文件</button>
-					<button type="button" class="layui-btn layui-btn-xs" id="uploadAtt">开始上传</button>
+					<button type="button" class="layui-btn layui-btn-xs" id="uploadPicAtt">上传图片</button>
+				</div>
+				<div class="layui-inline">
+					<button type="button" class="layui-btn layui-btn-xs" id="uploadOtherAtt">上传附件</button>
 				</div>
 				<table id="attTable" lay-filter="attTable"></table>
 			</div>
@@ -98,14 +101,14 @@
 			<div class="layui-form-item">
 				<label class="layui-form-label">时间</label>
 				<div class="layui-input-block newsStatus">
-					<input type="text" class="layui-input" id="fdpublishdate" name="fdpublishdate" placeholder="请选择时间" readonly />
+					<input type="text" class="layui-input" id="fdpublishdate" name="fdpublishdate" lay-verify="required" placeholder="请选择时间" readonly />
 				</div>
 			</div>
 			<div class="layui-form-item">
 				<label class="layui-form-label">正负面</label>
 				<div class="layui-input-block">
-					<select class="select-zhengfumian">
-						<option value="">不限</option>
+					<select name="fdimportance" class="select-zhengfumian">
+						<option value="">请选择</option>
 						<option value="1">未设置</option>
 						<option value="2">优良</option>
 						<option value="3">不良</option>
@@ -115,8 +118,8 @@
 			<div class="layui-form-item openness">
 				<label class="layui-form-label">审核</label>
 				<div class="layui-input-block">
-					<select class="select-fdapproveflag">
-						<option value="">不限</option>
+					<select name="fdapproveflag" class="select-fdapproveflag">
+						<option value="">请选择</option>
 						<option value="1">未审核</option>
 						<option value="2">审核通过</option>
 						<option value="3">审核未通过</option>
@@ -129,11 +132,16 @@
 			<hr class="layui-bg-gray" />
 			<div class="layui-right">
 				<a class="layui-btn layui-btn-sm" lay-filter="addNews" lay-submit><i class="layui-icon">&#xe609;</i>发布</a>
-				<a class="layui-btn layui-btn-primary layui-btn-sm" lay-filter="look" lay-submit>预览</a>
+				<!-- <a class="layui-btn layui-btn-primary layui-btn-sm" lay-filter="look" lay-submit>预览</a> -->
 			</div>
 		</div>
 	</div>
 </form>
+
+<script type="text/html" id="attListBar">
+	<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
+</script>
+
 <script charset="utf-8" src="../../kindeditor/kindeditor.js"></script>
 <script charset="utf-8" src="../../kindeditor/lang/zh_CN.js"></script>
 <script charset="utf-8" src="../../kindeditor/plugins/code/prettify.js"></script>
