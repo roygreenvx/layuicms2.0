@@ -202,34 +202,33 @@ layui.use(['form','layer','table','layedit','laydate','upload','formSelects'],fu
     //     }
     // })
     form.on("submit(addNews)",function(data){
-        console.log(data);
-        var newsData=data.field;
-        newsData.fdcontent=keditor.text();
-        newsData.fdhtmlcontent=keditor.html();
-        newsData=[newsData];
-        
-        var cityData=[{"children":[]}];
-        $.each(layui.formSelects.value('select-city'),function(index,data){
-            cityData[0].children.push({
-                "lfdid":data.value,
-                "lfdname":data.name
-            })
-        })
-
-        var channelData=[{"children":[]}];
-        $.each(layui.formSelects.value('select-channel'),function(index,data){
-            channelData[0].children.push({
-                "fdid":data.value,
-                "fdname":data.name
-            })
-        })
-
-        var attData=delAttList;
-
         //弹出loading
         var index = top.layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
 
-        if(fdid!=""){
+        if(fdid!=""){//编辑
+            var newsData=data.field;
+            newsData.fdcontent=keditor.text();
+            newsData.fdhtmlcontent=keditor.html();
+            newsData=[newsData];
+            
+            var cityData=[{"children":[]}];
+            $.each(layui.formSelects.value('select-city'),function(index,data){
+                cityData[0].children.push({
+                    "lfdid":data.value,
+                    "lfdname":data.name
+                })
+            })
+
+            var channelData=[{"children":[]}];
+            $.each(layui.formSelects.value('select-channel'),function(index,data){
+                channelData[0].children.push({
+                    "fdid":data.value,
+                    "fdname":data.name
+                })
+            })
+
+            var attData=delAttList;
+        
             $.ajax({
                 url: "http://localhost:13389/DataServer/TreeData.aspx?method=UpdateArticle",
                 type: 'post',
@@ -255,7 +254,31 @@ layui.use(['form','layer','table','layedit','laydate','upload','formSelects'],fu
             });
         }
         else{
-            newsData[0]["fdnodeguid"]=layui.formSelects.value('select-channel').length>0?layui.formSelects.value('select-channel')[0]:"";
+
+            var newsData={};
+            newsData["fdid"]=data.field.fdid;
+            newsData["fdarticletitle"]=data.field.fdarticletitle;
+            newsData["fdarticleurl"]=data.field.fdarticleurl;
+            newsData["fdsource"]=data.field.fdsource;
+            newsData["fdkeyword"]=data.field.fdkeyword;
+            newsData["fdpublishdate"]=data.field.fdpublishdate;
+            newsData["fdimportance"]=data.field.fdimportance;
+            newsData["fdapproveflag"]=data.field.fdapproveflag;
+            newsData["fdcontent"]=keditor.text();
+            newsData["fdhtmlcontent"]=keditor.html();
+            newsData["fdnodeguid"]=layui.formSelects.value('select-channel').length>0?layui.formSelects.value('select-channel')[0]:"";
+            newsData=[newsData];
+
+            var cityData=[{"children":[]}];
+            $.each(layui.formSelects.value('select-city'),function(index,data){
+                cityData[0].children.push({
+                    "lfdid":data.value,
+                    "lfdname":data.name
+                })
+            })
+
+            var attData=delAttList;
+
             $.ajax({
                 url: "http://localhost:13389/DataServer/TreeData.aspx?method=SaveArticle",
                 type: 'post',

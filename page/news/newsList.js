@@ -565,7 +565,7 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect','yu
                     if (result.iserror) {
                         alert(result.responseText);
                     } else {
-                        alert("保存成功.");
+                        top.layer.msg("保存成功！");
                     }
 
                     //grid.reload();
