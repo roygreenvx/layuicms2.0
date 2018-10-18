@@ -604,7 +604,7 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect','yu
                     });
                 },500)
             },
-            
+
         })
         layui.layer.full(index);
         //改变窗口大小时，重置弹窗的宽高，防止超出可视区域（如F12调出debug的操作）
@@ -619,19 +619,27 @@ layui.use(['form','layer','laydate','table','laytpl','element','tableSelect','yu
     //批量删除
     $(".delAll_btn").click(function(){
         var checkStatus = table.checkStatus('newsListTable'),
-            data = checkStatus.data,
-            newsId = [];
+            data = checkStatus.data;
         if(data.length > 0) {
-            for (var i in data) {
-                newsId.push(data[i].newsId);
-            }
             layer.confirm('确定删除选中的文章？', {icon: 3, title: '提示信息'}, function (index) {
-                // $.get("删除文章接口",{
-                //     newsId : newsId  //将需要删除的newsId作为参数传入
-                // },function(data){
-                tableIns.reload();
-                layer.close(index);
-                // })
+                $.ajax({
+                    url: "http://localhost:13389/DataServer/TreeData.aspx?method=SaveNews",
+                    data: { data: data },
+                    type: "post",
+                    dataType : 'json',
+                    success: function (result) {
+                        layer.close(index);
+                        if (result.iserror) {
+                            top.layer.msg(result.responseText);
+                        } else {
+                            //top.layer.msg("保存成功！");
+                            tableIns.reload();
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert(jqXHR.responseText);
+                    }
+                });
             })
         }else{
             layer.msg("请选择需要删除的文章");

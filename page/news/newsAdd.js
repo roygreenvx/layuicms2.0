@@ -257,13 +257,13 @@ layui.use(['form','layer','table','layedit','laydate','upload','formSelects'],fu
 
             var newsData={};
             newsData["fdid"]=data.field.fdid;
-            newsData["fdarticletitle"]=data.field.fdarticletitle;
+            newsData["title"]=data.field.fdarticletitle;
             newsData["fdarticleurl"]=data.field.fdarticleurl;
-            newsData["fdsource"]=data.field.fdsource;
-            newsData["fdkeyword"]=data.field.fdkeyword;
-            newsData["fdpublishdate"]=data.field.fdpublishdate;
+            newsData["source"]=data.field.fdsource;
+            newsData["keyword"]=data.field.fdkeyword;
+            newsData["publishtime"]=data.field.fdpublishdate;
             newsData["fdimportance"]=data.field.fdimportance;
-            newsData["fdapproveflag"]=data.field.fdapproveflag;
+            //newsData["fdapproveflag"]=data.field.fdapproveflag;
             newsData["fdcontent"]=keditor.text();
             newsData["fdhtmlcontent"]=keditor.html();
             newsData["fdnodeguid"]=layui.formSelects.value('select-channel').length>0?layui.formSelects.value('select-channel')[0]:"";
