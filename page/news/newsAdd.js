@@ -266,7 +266,7 @@ layui.use(['form','layer','table','layedit','laydate','upload','formSelects'],fu
             //newsData["fdapproveflag"]=data.field.fdapproveflag;
             newsData["fdcontent"]=keditor.text();
             newsData["fdhtmlcontent"]=keditor.html();
-            newsData["fdnodeguid"]=layui.formSelects.value('select-channel').length>0?layui.formSelects.value('select-channel')[0]:"";
+            newsData["fdnodeguid"]=layui.formSelects.value('select-channel').length>0?layui.formSelects.value('select-channel')[0].value:"";
             newsData=[newsData];
 
             var cityData=[{"children":[]}];
